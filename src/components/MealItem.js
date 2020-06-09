@@ -69,7 +69,8 @@ const styles = StyleSheet.create({
     height: '20%'
   },
   bold: {
-    fontFamily: 'muli-bold'
+    fontFamily: 'muli-bold',
+    color: "#FFF"
   }
 })
 

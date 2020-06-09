@@ -105,7 +105,8 @@ const MainNavigator = createDrawerNavigator({
   contentOptions: {
     activeTintColor: themes.secondary,
     labelStyle: {
-      fontFamily: 'muli-bold'
+      fontFamily: 'muli',
+      fontWeight: 'normal'
     }
   }
 })

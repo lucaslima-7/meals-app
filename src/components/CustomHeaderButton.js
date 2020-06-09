@@ -1,7 +1,6 @@
 import React from 'react'
 import { HeaderButton } from 'react-navigation-header-buttons'
 import { FontAwesome5 } from '@expo/vector-icons'
-import theme from '../../themes/themes'
 
 const CustomHeaderButton = ({ ...other }) => {
   return (

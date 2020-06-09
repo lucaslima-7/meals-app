@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
-    paddingHorizontal: 20
+    marginVertical: 20,
+    paddingHorizontal: 24
   }
 })
 
