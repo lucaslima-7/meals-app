@@ -1,13 +1,17 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { View, Text, FlatList, StyleSheet } from 'react-native'
-import { MEALS } from '../data/dummy-data'
 import MealItem from '../components/MealItem'
 import themes from '../../themes/themes'
 import CustomHeaderButton from '../components/CustomHeaderButton'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 const FavoritesScreen = ({ navigation }) => {
+  const { favoriteMeals } = useSelector(({ meals }) => meals)
+
   const renderMealItem = data => {
+    const isFavorite = favoriteMeals.find(meal => meal.id === data.item.id)
+
     return (
       <MealItem
         title={data.item.title}
@@ -16,21 +20,30 @@ const FavoritesScreen = ({ navigation }) => {
         affordability={data.item.affordability}
         image={data.item.imageUrl}
         onSelectMeal={() => {
-          navigation.navigate({ routeName: 'MealDetail', params: { mealId: data.item.id } })
+          navigation.navigate({
+            routeName: 'MealDetail',
+            params: {
+              mealId: data.item.id,
+              mealTitle: data.item.title,
+              isFav: isFavorite
+            }
+          })
         }}
       />
     )
   }
 
-  const favMeals = MEALS.filter(meal => meal.id === 'm1' || meal.id === 'm2')
-
   return (
     <View style={styles.screen}>
-      <FlatList
-        style={{ width: '100%' }}
-        data={favMeals}
-        renderItem={renderMealItem}
-      />
+      {favoriteMeals && favoriteMeals.length > 0 ? (
+        <FlatList
+          style={{ width: '100%' }}
+          data={favoriteMeals}
+          renderItem={renderMealItem}
+        />
+      ) : (
+        <Text style={{ fontFamily: 'muli' }}>You don't have any favorites 😢</Text>
+      )}
     </View>
   )
 }

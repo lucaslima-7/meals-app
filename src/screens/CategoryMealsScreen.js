@@ -1,11 +1,16 @@
 import React from 'react'
-import { View, FlatList, StyleSheet, Text } from 'react-native'
-import { CATEGORIES, MEALS } from '../data/dummy-data'
+import { useSelector } from 'react-redux'
+import { View, Text, FlatList, StyleSheet } from 'react-native'
+import { CATEGORIES } from '../data/dummy-data'
 import themes from '../../themes/themes'
 import MealItem from '../components/MealItem'
 
 const CategoryMealsScreen = ({ navigation }) => {
+  const { filteredMeals, favoriteMeals } = useSelector(({ meals }) => meals)
+
   const renderMealItem = data => {
+    const isFavorite = favoriteMeals.find(meal => meal.id === data.item.id)
+
     return (
       <MealItem
         title={data.item.title}
@@ -14,18 +19,29 @@ const CategoryMealsScreen = ({ navigation }) => {
         affordability={data.item.affordability}
         image={data.item.imageUrl}
         onSelectMeal={() => {
-          navigation.navigate({ routeName: 'MealDetail', params: { mealId: data.item.id } })
+          navigation.navigate({
+            routeName: 'MealDetail',
+            params: {
+              mealId: data.item.id,
+              mealTitle: data.item.title,
+              isFav: isFavorite
+            }
+          })
         }}
       />
     )
   }
 
   const id = navigation.getParam('categoryId')
-  const displayedMeals = MEALS.filter(meal => meal.categoryIds.indexOf(id) >= 0)
+  const displayedMeals = filteredMeals.filter(meal => meal.categoryIds.indexOf(id) >= 0)
 
   return (
     <View style={styles.screen}>
-      <FlatList style={{ width: '100%' }} data={displayedMeals} renderItem={renderMealItem} />
+      {displayedMeals.length === 0 ? (
+        <Text style={{ fontFamily: 'muli' }}>No meals found, check your filters!</Text>
+      ) : (
+          <FlatList style={{ width: '100%' }} data={displayedMeals} renderItem={renderMealItem} />
+        )}
     </View>
   )
 }

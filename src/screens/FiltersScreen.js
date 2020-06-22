@@ -1,24 +1,29 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 import { View, Text, StyleSheet } from 'react-native'
+import { setFilters } from '../store/actions/meals.actions'
 import CustomHeaderButton from '../components/CustomHeaderButton'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import Filter from '../components/Filter'
 import themes from '../../themes/themes'
 
 const FiltersScreen = ({ navigation }) => {
-  const [glutten, setGlutten] = useState(false)
+  const dispatch = useDispatch()
+  const [gluten, setGluten] = useState(false)
   const [lactose, setLactose] = useState(false)
   const [vegan, setVegan] = useState(false)
   const [vegetarian, setVegetarian] = useState(false)
 
   const saveFilters = useCallback(() => {
     const appliedFilters = {
-      gluttenFree: glutten,
+      glutenFree: gluten,
       lactoseFree: lactose,
       vegan,
       isVegetarian: vegetarian
     }
-  }, [glutten, lactose, vegan, vegetarian])
+
+    dispatch(setFilters(appliedFilters))
+  }, [gluten, lactose, vegan, vegetarian, dispatch])
 
   useEffect(() => {
     navigation.setParams({ save: saveFilters })
@@ -27,7 +32,7 @@ const FiltersScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Available Filters / Restrictions</Text>
-      <Filter label={'Gluten-Free'} value={glutten} changeValue={setGlutten} />
+      <Filter label={'Gluten-Free'} value={gluten} changeValue={setGluten} />
       <Filter label={'Lactose-Free'} value={lactose} changeValue={setLactose} />
       <Filter label={'Vegan'} value={vegan} changeValue={setVegan} />
       <Filter label={'Vegetarian'} value={vegetarian} changeValue={setVegetarian} />

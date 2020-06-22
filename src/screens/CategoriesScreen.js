@@ -1,11 +1,7 @@
 import React from 'react'
 import {
-  View,
-  Text,
-  Button,
   StyleSheet,
-  FlatList,
-  TouchableOpacity
+  FlatList
 } from 'react-native'
 import { CATEGORIES } from '../data/dummy-data'
 import themes from '../../themes/themes'

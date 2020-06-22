@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { View, Text, Button, StyleSheet, ScrollView, Image } from 'react-native'
-import { MEALS } from '../data/dummy-data'
 import themes from '../../themes/themes'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import CustomHeaderButton from '../components/CustomHeaderButton'
+import { toggleFavorite } from '../store/actions/meals.actions'
+import { openSnack } from '../store/actions/snack.actions'
 
 const ListItem = ({ children }) => {
   return (
@@ -14,8 +16,25 @@ const ListItem = ({ children }) => {
 }
 
 const MealDetailScreen = ({ navigation }) => {
+  const dispatch = useDispatch()
+  const { initialMeals, favoriteMeals } = useSelector(({ meals }) => meals)
   const mealId = navigation.getParam('mealId')
-  const selectedMeal = MEALS.find(meal => meal.id === mealId)
+  const selectedMeal = initialMeals.find(meal => meal.id === mealId)
+
+  const toggleFavoriteHandler = useCallback(() => {
+    dispatch(toggleFavorite(mealId))
+    dispatch(openSnack())
+  }, [dispatch, mealId])
+
+  useEffect(() => {
+    navigation.setParams({ toggleFav: toggleFavoriteHandler })
+  }, [toggleFavoriteHandler])
+
+  useEffect(() => {
+    const result = favoriteMeals.some(meal => meal.id === mealId)
+    navigation.setParams({ isFav: result })
+  }, [favoriteMeals])
+
 
   return (
     <ScrollView>
@@ -38,13 +57,14 @@ const MealDetailScreen = ({ navigation }) => {
 }
 
 MealDetailScreen.navigationOptions = ({ navigation }) => {
-  const mealId = navigation.getParam('mealId')
-  const selectedMeal = MEALS.find(meal => meal.id === mealId)
+  const mealTitle = navigation.getParam('mealTitle')
+  const toggleFavorite = navigation.getParam('toggleFav')
+  const isFav = navigation.getParam('isFav')
 
   return {
-    title: selectedMeal.title,
+    title: mealTitle,
     headerRight: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-      <Item title="Favorite" iconName="heart" color="#FFF" onPress={() => { }} />
+      <Item title="Favorite" iconName={isFav ? "heart" : "heart-o"} color="#FFF" onPress={toggleFavorite} />
     </HeaderButtons>,
     headerStyle: {
       backgroundColor: themes.primary,
